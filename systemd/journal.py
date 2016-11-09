@@ -574,10 +574,10 @@ class JournalHandler(_logging.Handler):
                     tb_string.close()
 
                 if exc_type:
-                    extras['EXCEPTION_TYPE'] = str(exc_type)
+                    extras['EXCEPTION_TYPE'] = unicode(exc_type)
 
                 if exc_value:
-                    extras['EXCEPTION_MESSAGE'] = str(exc_value)
+                    extras['EXCEPTION_MESSAGE'] = unicode(exc_value)
 
             if record.args:
                 extras['CODE_ARGS'] = str(record.args)
