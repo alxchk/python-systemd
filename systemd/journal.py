@@ -37,6 +37,7 @@ from ._reader import (_Reader, NOP, APPEND, INVALIDATE,
                       OS_ROOT,
                       _get_catalog)
 from . import id128 as _id128
+from StringIO import StringIO
 
 if _sys.version_info >= (3,):
     from ._reader import Monotonic
@@ -564,11 +565,19 @@ class JournalHandler(_logging.Handler):
                 k:str(v) for k,v in record.__dict__.iteritems()
             })
 
-            if record.exc_text:
-                extras['EXCEPTION_TEXT'] = record.exc_text
-
             if record.exc_info:
-                extras['EXCEPTION_INFO'] = record.exc_info
+                exc_type, exc_value, exc_tb = record.exc_info
+                if exc_tb:
+                    tb_string = StringIO()
+                    _traceback.print_tb(exc_tb, limit=None, file=tb_string)
+                    extras['EXCEPTION_TRACE_BACK'] = tb_string.getvalue()
+                    tb_string.close()
+
+                if exc_type:
+                    extras['EXCEPTION_TYPE'] = str(exc_type)
+
+                if exc_value:
+                    extras['EXCEPTION_MESSAGE'] = str(exc_value)
 
             if record.args:
                 extras['CODE_ARGS'] = str(record.args)
