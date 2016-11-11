@@ -560,9 +560,9 @@ class JournalHandler(_logging.Handler):
             msg = self.format(record)
             pri = self.mapPriority(record.levelno)
             mid = getattr(record, 'MESSAGE_ID', None)
-            extras = { k:str(v) for k,v in self._extra.iteritems() }
+            extras = { k:unicode(v) for k,v in self._extra.iteritems() }
             extras.update({
-                k:str(v) for k,v in record.__dict__.iteritems()
+                k:unicode(v) for k,v in record.__dict__.iteritems()
             })
 
             if record.exc_info:
@@ -570,7 +570,7 @@ class JournalHandler(_logging.Handler):
                 if exc_tb:
                     tb_string = StringIO()
                     _traceback.print_tb(exc_tb, limit=None, file=tb_string)
-                    extras['EXCEPTION_TRACE_BACK'] = tb_string.getvalue()
+                    extras['EXCEPTION_TRACE_BACK'] = unicode(tb_string.getvalue())
                     tb_string.close()
 
                 if exc_type:
